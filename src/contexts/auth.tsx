@@ -14,7 +14,7 @@ interface AuthContextData {
 
 interface ResponseSignIn {
   token: string;
-  user_id: string;
+  guia_id: string;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -25,13 +25,13 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadStoragedData() {
-      const storaged_user_id = await AsyncStorage.getItem("@ValetourGuia:user_id");
+      const storaged_user_id = await AsyncStorage.getItem("@ValetourGuia:guia_id");
       const sotraged_token = await AsyncStorage.getItem("@ValetourGuia:token");
       if (storaged_user_id && sotraged_token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${JSON.parse(sotraged_token)}`;
         setUserId(storaged_user_id);
-        setLoading(false);
       }
+      setLoading(false);
     }
     loadStoragedData();
   }, []);
@@ -39,11 +39,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   async function signIn(email: string, password: string) {
     const response = await auth.signIn(email, password);
     if (typeof response !== "string") {
-      setUserId(response.user_id);
+      setUserId(response.guia_id);
 
       api.defaults.headers.Authorization = `Bearer ${response.token}`;
 
-      await AsyncStorage.setItem("@ValetourGuia:user_id", JSON.stringify(response.user_id));
+      await AsyncStorage.setItem("@ValetourGuia:guia_id", JSON.stringify(response.guia_id));
       await AsyncStorage.setItem("@ValetourGuia:token", JSON.stringify(response.token));
     }
 
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   async function signOut() {
     setUserId(null);
-    await AsyncStorage.removeItem("@ValetourGuia:token");
+    await AsyncStorage.removeItem("@ValetourGuia:guia_id");
     await AsyncStorage.removeItem("@ValetourGuia:token");
   }
 
