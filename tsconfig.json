@@ -7,6 +7,24 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": false
+    "strict": false,
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "lint": {
+          "validProperties": [
+            "resize-mode",
+            "shadow-opacity",
+            "shadow-radius",
+            "shadow-color",
+            "shadow-offset",
+            "text-shadow-radius",
+            "text-shadow-color",
+            "text-shadow-offset",
+            "elevation"
+          ]
+        }
+      }
+    ]
   }
 }
