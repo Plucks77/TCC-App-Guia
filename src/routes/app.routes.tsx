@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 import Main from "../pages/Main";
+import PacoteAtivo from "../pages/PacoteAtivo";
+import EditarPacote from "../pages/EditarPacote";
 
 import { palette } from "../styles/global";
 
@@ -35,6 +37,20 @@ function PrincipalStack() {
         component={Main}
         options={{
           title: "Meus pacotes",
+        }}
+      />
+      <AppStack.Screen
+        name="PacoteAtivo"
+        component={PacoteAtivo}
+        options={{
+          title: "",
+        }}
+      />
+      <AppStack.Screen
+        name="EditarPacote"
+        component={EditarPacote}
+        options={{
+          title: "",
         }}
       />
     </AppStack.Navigator>
