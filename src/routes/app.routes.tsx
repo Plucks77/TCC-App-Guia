@@ -34,7 +34,7 @@ function PrincipalStack() {
         name="Main"
         component={Main}
         options={{
-          title: "Home",
+          title: "Meus pacotes",
         }}
       />
     </AppStack.Navigator>
