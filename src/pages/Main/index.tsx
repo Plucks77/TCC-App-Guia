@@ -15,7 +15,7 @@ interface pacote {
   image_url: string;
 }
 
-const Main: React.FC = () => {
+export function Main({ navigation }) {
   const { user_id } = useAuth();
   const [pacotes, setPacotes] = useState<pacote[]>([]);
 
@@ -29,7 +29,14 @@ const Main: React.FC = () => {
   return (
     <Container>
       {pacotes.map((pacote) => (
-        <PacoteContainer key={pacote.id} onPress={() => {}}>
+        <PacoteContainer
+          key={pacote.id}
+          onPress={() => {
+            pacote.dias_restantes === 0
+              ? navigation.navigate("PacoteAtivo", { pacote: pacote })
+              : navigation.navigate("EditarPacote", { pacote: pacote });
+          }}
+        >
           <Foto source={{ uri: pacote.image_url }} />
           <Nome>{pacote.name}</Nome>
           {pacote.dias_restantes === 0 ? (
@@ -48,6 +55,6 @@ const Main: React.FC = () => {
       ))}
     </Container>
   );
-};
+}
 
 export default Main;
