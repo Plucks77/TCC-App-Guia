@@ -27,13 +27,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     async function loadStoragedData() {
       const storaged_user_id = await AsyncStorage.getItem("@ValetourGuia:user_id");
       const sotraged_token = await AsyncStorage.getItem("@ValetourGuia:token");
-
       if (storaged_user_id && sotraged_token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${JSON.parse(sotraged_token)}`;
-
         setUserId(storaged_user_id);
+        setLoading(false);
       }
-      setLoading(false);
     }
     loadStoragedData();
   }, []);
@@ -45,8 +43,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       api.defaults.headers.Authorization = `Bearer ${response.token}`;
 
-      await AsyncStorage.setItem("@Valetour:user_id", JSON.stringify(response.user_id));
-      await AsyncStorage.setItem("@Valetour:token", JSON.stringify(response.token));
+      await AsyncStorage.setItem("@ValetourGuia:user_id", JSON.stringify(response.user_id));
+      await AsyncStorage.setItem("@ValetourGuia:token", JSON.stringify(response.token));
     }
 
     return response;
@@ -54,8 +52,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   async function signOut() {
     setUserId(null);
-    await AsyncStorage.removeItem("@Valetour:user_id");
-    await AsyncStorage.removeItem("@Valetour:token");
+    await AsyncStorage.removeItem("@ValetourGuia:token");
+    await AsyncStorage.removeItem("@ValetourGuia:token");
   }
 
   return (
