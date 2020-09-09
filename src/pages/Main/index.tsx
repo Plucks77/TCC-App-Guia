@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import LottieView from "lottie-react-native";
 
 import api from "../../services/api";
 import getDate from "../../services/dayCalculator";
@@ -26,7 +27,7 @@ export function Main({ navigation }) {
     });
   }, []);
 
-  return (
+  return pacotes ? (
     <Container>
       {pacotes.map((pacote) => (
         <PacoteContainer
@@ -54,6 +55,8 @@ export function Main({ navigation }) {
         </PacoteContainer>
       ))}
     </Container>
+  ) : (
+    <LottieView source={require("../../../assets/loading.json")} autoPlay loop />
   );
 }
 
