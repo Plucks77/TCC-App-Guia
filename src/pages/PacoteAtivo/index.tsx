@@ -30,7 +30,7 @@ export function PacoteAtivo({ navigation, route }) {
           <Icone>
             <FontAwesome name="qrcode" size={24} color={palette.white} />
           </Icone>
-          <Botao texto="Escanear QR Code" primary={true} props={() => setScanning(!scanning)} />
+          <Botao texto="Escanear QR Code" primary={true} props={() => setScanning(true)} />
         </BotaoContainer>
 
         <BotaoContainer>
@@ -53,7 +53,7 @@ export function PacoteAtivo({ navigation, route }) {
       </BotoesContainer>
     </Container>
   ) : (
-    <Scanner />
+    <Scanner setScanning={setScanning} pacote_id={pacote.id} />
   );
 }
 
