@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import LottieView from "lottie-react-native";
 import { AppLoading } from "expo";
+import { FontAwesome } from "@expo/vector-icons";
+
 import api from "../../services/api";
 import getDate from "../../services/dayCalculator";
 import { useAuth } from "../../contexts/auth";
+import { useFocusEffect } from "@react-navigation/native";
 
-import { Container, Data, Foto, Nome, PacoteContainer, Participantes } from "./styles";
+import {
+  Container,
+  Data,
+  Foto,
+  Nome,
+  PacoteContainer,
+  Participantes,
+  AdicionarPacoteContainer,
+} from "./styles";
 
 interface pacote {
   __meta__: { participantes: number };
@@ -20,12 +31,22 @@ export function Main({ navigation }) {
   const { user_id } = useAuth();
   const [pacotes, setPacotes] = useState<pacote[]>([]);
 
-  useEffect(() => {
+  function fetchPacotes() {
     api.get(`/pacotes/guia/${user_id}`).then((res) => {
       const pacotes = getDate(res.data);
       setPacotes(pacotes);
     });
+  }
+
+  useEffect(() => {
+    fetchPacotes();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPacotes();
+    }, [])
+  );
 
   return pacotes.length !== 0 ? (
     <Container>
@@ -54,6 +75,9 @@ export function Main({ navigation }) {
           )}
         </PacoteContainer>
       ))}
+      <AdicionarPacoteContainer onPress={() => navigation.navigate("AdicionarPacote")}>
+        <FontAwesome name="plus" size={50} color="black" />
+      </AdicionarPacoteContainer>
     </Container>
   ) : (
     <LottieView source={require("../../../assets/loading.json")} autoPlay loop />

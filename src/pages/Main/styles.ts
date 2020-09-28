@@ -56,3 +56,15 @@ export const Participantes = styled.Text`
   text-shadow-color: black;
   text-shadow-offset: 0px 0px;
 `;
+
+export const AdicionarPacoteContainer = styled.TouchableOpacity`
+  width: 350px;
+  height: 200px;
+  justify-content: center;
+  align-items: center;
+  background: ${palette.lightGray};
+  align-self: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+`;
