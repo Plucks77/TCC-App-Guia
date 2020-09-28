@@ -6,6 +6,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Main from "../pages/Main";
 import PacoteAtivo from "../pages/PacoteAtivo";
 import EditarPacote from "../pages/EditarPacote";
+import AdicionarPacote from "../pages/AdicionarPacote";
 import ListaParticipantes from "../pages/ListaParticipantes";
 
 import { palette } from "../styles/global";
@@ -59,6 +60,13 @@ function PrincipalStack() {
         component={ListaParticipantes}
         options={{
           title: "Lista de participantes",
+        }}
+      />
+      <AppStack.Screen
+        name="AdicionarPacote"
+        component={AdicionarPacote}
+        options={{
+          title: "Criar pacote",
         }}
       />
     </AppStack.Navigator>
