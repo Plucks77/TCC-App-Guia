@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import { palette } from "../../styles/global";
 
 export const Container = styled.KeyboardAvoidingView.attrs(() => ({
@@ -6,7 +6,6 @@ export const Container = styled.KeyboardAvoidingView.attrs(() => ({
 }))`
   flex: 1;
   z-index: 1;
-  /* background: red; */
 `;
 
 export const InputsContainer = styled.ScrollView.attrs(() => ({
@@ -16,7 +15,6 @@ export const InputsContainer = styled.ScrollView.attrs(() => ({
   },
 }))`
   padding-top: 10px;
-  /* background: yellow; */
 `;
 
 export const InputArea = styled.View`
