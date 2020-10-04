@@ -12,6 +12,7 @@ export const InputsContainer = styled.ScrollView.attrs(() => ({
   alignItems: "center",
   contentContainerStyle: {
     paddingBottom: 50,
+    alignItems: "center",
   },
 }))`
   padding-top: 10px;
@@ -42,6 +43,7 @@ export const InputDataArea = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 310px;
 `;
 
 export const Data = styled.TextInput`

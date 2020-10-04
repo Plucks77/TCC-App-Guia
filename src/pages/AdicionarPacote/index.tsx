@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View, Platform, Button, Image, Dimensions } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import * as ImagePicker from "expo-image-picker";
 
+import { useAuth } from "../../contexts/auth";
 import Botao from "../../components/Botao";
 import api from "../../services/api";
 import { palette } from "../../styles/global";
@@ -16,6 +18,7 @@ import {
   Data,
   PickerContainer,
 } from "./styles";
+const WIDTH = Dimensions.get("window").width;
 
 interface pacote {
   id: number | null;
@@ -48,6 +51,19 @@ export function AdicionarPacote({ navigation }) {
   const [ready, setReady] = useState(false);
   const [categorias, setCategorias] = useState([]);
   const [locals, setLocals] = useState([]);
+  const [image, setImage] = useState(null);
+  const { user_id } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+  }, []);
 
   function fetchCategorias() {
     api
@@ -93,22 +109,64 @@ export function AdicionarPacote({ navigation }) {
     setReady(true);
   }, []);
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 1,
+    });
+    let r = "xd";
+    console.log("random", r);
+    // console.log(result);
+
+    if (result.cancelled === false) {
+      setImage(result);
+    }
+  };
+
   async function handleSave() {
     const dia = pacote.dia.split("/");
     const ano = pacote.date.split("-");
-    const diaHora = ano[0] + "-" + dia[1] + "-" + dia[0] + "T" + pacote.hora;
+    const diaHora = "2020" + "-" + dia[1] + "-" + dia[0] + "T" + pacote.hora;
     const pacoteEnviado = pacote;
     pacoteEnviado.date = diaHora;
-    // console.log(pacoteEnviado);
-    // return;
-    api.put(`/pacote/edit/${pacote.id}`, pacoteEnviado).then((res) => {
-      navigation.goBack();
-    });
+    let formData = new FormData();
+    formData.append("image", {
+      uri: image.uri,
+      type: "image/jpeg", // or photo.type
+      name: "testPhotoName.jpeg",
+    } as any);
+    formData.append("category_id", pacote.category_id);
+    formData.append("guia_id", user_id.toString());
+    formData.append("local_id", pacote.local_id);
+    formData.append("name", pacote.name);
+    formData.append("description", pacote.description);
+    formData.append("price", pacote.price);
+    formData.append("date", diaHora);
+
+    api
+      .post("/pacote/create", formData)
+      .then((res) => {
+        console.log("Aqui");
+        console.log(res.data);
+        // navigation.goBack();
+      })
+      .catch((erro) => {
+        console.log(erro);
+      });
   }
 
   return ready ? (
     <Container>
       <InputsContainer>
+        {image && (
+          <Image
+            source={{ uri: image.uri }}
+            style={{ width: WIDTH - 20, height: 200, resizeMode: "stretch" }}
+          />
+        )}
+
+        <Button title="Selecione a capa" onPress={pickImage} />
         <InputArea>
           <InputLabel>Nome:</InputLabel>
           <Input
@@ -117,7 +175,6 @@ export function AdicionarPacote({ navigation }) {
             value={pacote.name}
           />
         </InputArea>
-
         <InputArea>
           <InputLabel>Descrição:</InputLabel>
           <Input
@@ -126,7 +183,6 @@ export function AdicionarPacote({ navigation }) {
             value={pacote.description}
           />
         </InputArea>
-
         <InputArea>
           <InputLabel>Data e hora:</InputLabel>
           <InputDataArea>
@@ -143,7 +199,6 @@ export function AdicionarPacote({ navigation }) {
             />
           </InputDataArea>
         </InputArea>
-
         <InputArea>
           <InputLabel>Preço:</InputLabel>
           <Input
@@ -153,7 +208,6 @@ export function AdicionarPacote({ navigation }) {
             value={pacote.price}
           />
         </InputArea>
-
         <InputArea>
           <InputLabel>Categoria:</InputLabel>
           <PickerContainer>
@@ -166,7 +220,6 @@ export function AdicionarPacote({ navigation }) {
             />
           </PickerContainer>
         </InputArea>
-
         <InputArea>
           <InputLabel>Local:</InputLabel>
           <PickerContainer>
