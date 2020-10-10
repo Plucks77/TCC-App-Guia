@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Platform, Button, Image, Dimensions } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import * as ImagePicker from "expo-image-picker";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 import { useAuth } from "../../contexts/auth";
 import Botao from "../../components/Botao";
@@ -115,8 +117,6 @@ export function AdicionarPacote({ navigation }) {
       allowsEditing: false,
       quality: 1,
     });
-    let r = "xd";
-    console.log("random", r);
     // console.log(result);
 
     if (result.cancelled === false) {
@@ -126,15 +126,15 @@ export function AdicionarPacote({ navigation }) {
 
   async function handleSave() {
     const dia = pacote.dia.split("/");
-    const ano = pacote.date.split("-");
-    const diaHora = "2020" + "-" + dia[1] + "-" + dia[0] + "T" + pacote.hora;
+    const ano = new Date().getFullYear();
+    const diaHora = ano + "-" + dia[1] + "-" + dia[0] + "T" + pacote.hora;
     const pacoteEnviado = pacote;
     pacoteEnviado.date = diaHora;
     let formData = new FormData();
     formData.append("image", {
       uri: image.uri,
-      type: "image/jpeg", // or photo.type
-      name: "testPhotoName.jpeg",
+      type: "image/jpg", // or photo.type
+      name: uuidv4().replaceAll("-", "") + ".jpg",
     } as any);
     formData.append("category_id", pacote.category_id);
     formData.append("guia_id", user_id.toString());
@@ -147,9 +147,9 @@ export function AdicionarPacote({ navigation }) {
     api
       .post("/pacote/create", formData)
       .then((res) => {
-        console.log("Aqui");
-        console.log(res.data);
-        // navigation.goBack();
+        // console.log("Aqui");
+        // console.log(res.data);
+        navigation.goBack();
       })
       .catch((erro) => {
         console.log(erro);
@@ -162,7 +162,7 @@ export function AdicionarPacote({ navigation }) {
         {image && (
           <Image
             source={{ uri: image.uri }}
-            style={{ width: WIDTH - 20, height: 200, resizeMode: "stretch" }}
+            style={{ width: WIDTH - 20, height: 200, resizeMode: "stretch", borderRadius: 5 }}
           />
         )}
 
@@ -232,10 +232,10 @@ export function AdicionarPacote({ navigation }) {
             />
           </PickerContainer>
         </InputArea>
+        <BotaoContainer>
+          <Botao primary={true} texto="Salvar" props={() => handleSave()} />
+        </BotaoContainer>
       </InputsContainer>
-      <BotaoContainer>
-        <Botao primary={true} texto="Salvar" props={() => handleSave()} />
-      </BotaoContainer>
     </Container>
   ) : (
     <Text>Carregando...</Text>
