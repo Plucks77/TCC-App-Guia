@@ -38,9 +38,6 @@ export function Main({ navigation }) {
     });
   }
 
-  useEffect(() => {
-    fetchPacotes();
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
