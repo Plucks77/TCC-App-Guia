@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View, Image, Dimensions, Button } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import * as ImagePicker from "expo-image-picker";
+import { v4 as uuidv4 } from "uuid";
 
 import Botao from "../../components/Botao";
 import api from "../../services/api";
@@ -16,6 +18,8 @@ import {
   Data,
   PickerContainer,
 } from "./styles";
+
+const WIDTH = Dimensions.get("window").width;
 
 interface pacote {
   id: number;
@@ -33,6 +37,8 @@ interface pacote {
 
 export function EditarPacote({ navigation, route }) {
   const [pacote, setPacote] = useState<pacote>({} as pacote);
+  const [newCapa, setNewCapa] = useState(null)
+  const [oldCapa, setOldCapa] = useState(null)
   const [ready, setReady] = useState(false);
   const [categorias, setCategorias] = useState([]);
   const [locals, setLocals] = useState([]);
@@ -98,14 +104,74 @@ export function EditarPacote({ navigation, route }) {
     const diaHora = ano[0] + "-" + dia[1] + "-" + dia[0] + "T" + pacote.hora;
     const pacoteEnviado = pacote;
     pacoteEnviado.date = diaHora;
-    api.put(`/pacote/edit/${pacote.id}`, pacoteEnviado).then((res) => {
+
+   
+    if (newCapa) {
+      //Exclusão da capa anterior   
+      const alteredConfig = {
+        data: {
+           url: oldCapa
+        }       
+      };
+      console.log("Excluindo")
+      console.log(alteredConfig);
+      api.delete("/delete/foto", alteredConfig).catch(err => {
+         console.log(err.message)
+       });
+
+      //Envio da nova capa
+         let formData = new FormData();
+    formData.append("image", {
+      uri: newCapa.uri,
+      type: "image/jpg", // or photo.type
+      name: "Teste.jpg",
+    } as any);
+      console.log("Enviando")
+      api.post("/envia/foto/Pacotes", formData).then(res => {
+        const newUrl = res.data.url;
+        pacoteEnviado.image_url = newUrl;
+           api.put(`/pacote/edit/${pacote.id}`, pacoteEnviado).then((res) => {
       navigation.goBack();
     });
+       })
+    }        
+    else {
+      api.put(`/pacote/edit/${pacote.id}`, pacoteEnviado).then((res) => {
+      navigation.goBack();
+    });
+    }    
+    
   }
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 1,
+    });
+    // console.log(result);
+
+    if (result.cancelled === false) {
+      setNewCapa(result);
+      setOldCapa(pacote.image_url);
+      setPacote({ ...pacote, image_url: result.uri });
+    }
+  };
 
   return ready ? (
     <Container>
       <InputsContainer>
+        <Image
+          source={{ uri: pacote.image_url }}
+          style={{
+            width: WIDTH - 20,
+            height: 200,
+            resizeMode: "stretch",
+            borderRadius: 5,
+            marginBottom: 10,
+          }}
+        />
+        <Button title="Selecione a capa" onPress={pickImage} />
         <InputArea>
           <InputLabel>Nome:</InputLabel>
           <Input
