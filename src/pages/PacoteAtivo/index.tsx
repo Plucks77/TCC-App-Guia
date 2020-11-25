@@ -44,12 +44,12 @@ export function PacoteAtivo({ navigation, route }) {
           />
         </BotaoContainer>
 
-        <BotaoContainer>
+        {/* <BotaoContainer>
           <Icone>
             <FontAwesome name="flag" size={24} color={palette.white} />
           </Icone>
           <Botao texto="Reunião" primary={true} props={null} />
-        </BotaoContainer>
+        </BotaoContainer> */}
       </BotoesContainer>
     </Container>
   ) : (

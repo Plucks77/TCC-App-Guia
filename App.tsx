@@ -26,9 +26,12 @@ const App: React.FC = () => {
   }
 
   function _handleNotificationResponse(response) {
-    const x = response.notification.request.content.data.body.x;
-    const y = response.notification.request.content.data.body.y;
-    console.log(x, y);
+    console.log("Aqui")
+    // console.log(response.notification.request.content.data.x)
+    // return;
+    const x = response.notification.request.content.data.x;
+    const y = response.notification.request.content.data.y;
+    // console.log(x, y);
     if (Platform.OS === "android") {
       Linking.openURL(`http://maps.google.com/maps?daddr=${x},${y}`).catch((err) =>
         console.error("An error occurred", err)
